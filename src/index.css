@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #1c1917;
+  --color-paper: #fffdf8;
+  --color-road: #b45309;
+  --color-road-dark: #92400e;
+  --color-stage: #1e3a8a;
+  --font-display: "Georgia", "Cambria", serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
