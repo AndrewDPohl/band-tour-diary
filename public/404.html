@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Tour Diary</title>
+    <!--
+      GitHub Pages serves this file for any path it doesn't recognize as a
+      real file (i.e. every client-side route in this app). It re-encodes the
+      requested path into a query string and redirects to the app's root,
+      where the matching script in index.html decodes it back into a real
+      path via history.replaceState before React Router ever sees it.
+      Technique: https://github.com/rafgraph/spa-github-pages
+
+      pathSegmentsToKeep = 1 because this is a GitHub Pages *project* site
+      (served at /band-tour-diary/...). If this ever moves to a custom domain
+      or a user/org root site (served at /...), change this to 0.
+    -->
+    <script type="text/javascript">
+      var pathSegmentsToKeep = 1
+
+      var l = window.location
+      l.replace(
+        l.protocol +
+          '//' +
+          l.hostname +
+          (l.port ? ':' + l.port : '') +
+          l.pathname
+            .split('/')
+            .slice(0, 1 + pathSegmentsToKeep)
+            .join('/') +
+          '/?/' +
+          l.pathname
+            .slice(1)
+            .split('/')
+            .slice(pathSegmentsToKeep)
+            .join('/')
+            .replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash,
+      )
+    </script>
+  </head>
+  <body></body>
+</html>

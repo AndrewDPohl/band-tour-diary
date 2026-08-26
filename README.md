@@ -42,10 +42,31 @@ Supabase (Postgres + Auth + Storage).
 - `src/types/database.ts` — types mirroring the database schema
 - `supabase/migrations/0001_init.sql` — full schema, RLS policies, storage bucket
 
+## Deploying to GitHub Pages
+
+[.github/workflows/deploy.yml](./.github/workflows/deploy.yml) builds and deploys the
+app automatically on every push to `main`. Two one-time steps to turn it on:
+
+1. **Enable Pages**: repo → **Settings → Pages** → set **Source** to **GitHub Actions**.
+2. **Add your Supabase keys as repo secrets** (the build needs them, and `.env.local`
+   is gitignored on purpose — it never reaches GitHub): repo → **Settings → Secrets and
+   variables → Actions → New repository secret**, add both:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+
+   (The Supabase **anon** key is meant to be public — it's safe in a client bundle as
+   long as your RLS policies are correct, which they are here. Never put the
+   `service_role` key anywhere in this app.)
+
+After that, push to `main` and the Actions tab will show the deploy running; the app
+will be live at `https://<your-username>.github.io/<repo-name>/`.
+
+**Moving to a custom domain later**: drop the `--base=/${{ github.event.repository.name
+}}/` flag in the workflow, add a `public/CNAME` file containing your domain, point its
+DNS at GitHub Pages, and change `pathSegmentsToKeep` from `1` to `0` in
+[public/404.html](./public/404.html) (its comment explains why).
+
 ## Notes for future work
 
 - Currently assumes one band per user account; the data model (`band_members`) already
   supports a user belonging to multiple bands if that's ever needed.
-- Not yet deployed anywhere — runs locally via `npm run dev`. When you're ready to put
-  it on the real internet (e.g. for bandmates to use from their phones on the road),
-  a static host like Vercel or Netlify works well since there's no custom backend.
