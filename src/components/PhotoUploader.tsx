@@ -39,11 +39,11 @@ export function PhotoUploader({ bandId, showId }: { bandId: string; showId: stri
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={pending > 0}
-        className="rounded-lg border border-road/40 bg-road/10 px-4 py-2 text-sm font-medium text-road-dark transition hover:bg-road/20 disabled:opacity-50"
+        className="rounded-lg border border-road/40 bg-road/10 px-4 py-2 text-sm font-medium text-accent transition hover:bg-road/20 disabled:opacity-50"
       >
         {pending > 0 ? `Uploading ${pending}…` : 'Add photos'}
       </button>
-      {error && <p className="mt-2 text-sm text-rose-700 dark:text-rose-400">{error}</p>}
+      {error && <p className="mt-2 text-sm text-danger">{error}</p>}
     </div>
   )
 }

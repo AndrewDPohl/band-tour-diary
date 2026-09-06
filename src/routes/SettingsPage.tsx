@@ -1,13 +1,10 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { useTheme, type Theme } from '../context/ThemeContext'
+import { themeOptions, useTheme } from '../context/ThemeContext'
 import { useBandMembers, useCurrentBand } from '../hooks/useBand'
 
-const themeOptions: { value: Theme; label: string; icon: string }[] = [
-  { value: 'light', label: 'Light', icon: '☀️' },
-  { value: 'dark', label: 'Dark', icon: '🌙' },
-  { value: 'system', label: 'System', icon: '💻' },
-]
+const inputClass =
+  'mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road'
 
 function ChangePasswordForm() {
   const { updatePassword } = useAuth()
@@ -17,6 +14,14 @@ function ChangePasswordForm() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+
+  // Editing any field after a submit means the previous result no longer
+  // describes what's on screen — clear both so a stale "Password updated."
+  // (or a stale error) can't linger next to a half-typed new attempt.
+  function clearStatus() {
+    setError(null)
+    setSuccess(false)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -52,8 +57,11 @@ function ChangePasswordForm() {
           type="password"
           required
           value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
+          onChange={(e) => {
+            setCurrentPassword(e.target.value)
+            clearStatus()
+          }}
+          className={inputClass}
         />
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -64,8 +72,11 @@ function ChangePasswordForm() {
             required
             minLength={6}
             value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
+            onChange={(e) => {
+              setNewPassword(e.target.value)
+              clearStatus()
+            }}
+            className={inputClass}
           />
         </div>
         <div>
@@ -75,14 +86,17 @@ function ChangePasswordForm() {
             required
             minLength={6}
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
+            onChange={(e) => {
+              setConfirmPassword(e.target.value)
+              clearStatus()
+            }}
+            className={inputClass}
           />
         </div>
       </div>
 
-      {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
-      {success && <p className="text-sm text-emerald-700 dark:text-emerald-400">Password updated.</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
+      {success && <p className="text-sm text-success">Password updated.</p>}
 
       <button
         type="submit"
@@ -119,7 +133,7 @@ export function SettingsPage() {
         <div className="mt-3">
           <p className="text-sm text-ink/60">Invite code — share this with bandmates so they can join:</p>
           <div className="mt-1 flex items-center gap-2">
-            <span className="rounded-lg bg-road/10 px-3 py-1.5 font-mono text-lg tracking-widest text-road-dark dark:text-amber-400">
+            <span className="rounded-lg bg-road/10 px-3 py-1.5 font-mono text-lg tracking-widest text-accent">
               {bandData?.band.invite_code}
             </span>
             <button
@@ -157,9 +171,7 @@ export function SettingsPage() {
               type="button"
               onClick={() => setTheme(option.value)}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition ${
-                theme === option.value
-                  ? 'border-road/40 bg-road/10 text-road-dark dark:text-amber-400'
-                  : 'border-ink/15 text-ink/70 hover:bg-ink/5'
+                theme === option.value ? 'border-road/40 bg-road/10 text-accent' : 'border-ink/15 text-ink/70 hover:bg-ink/5'
               }`}
             >
               <span aria-hidden="true">{option.icon}</span>

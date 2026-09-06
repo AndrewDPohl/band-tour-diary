@@ -160,7 +160,7 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
             <div>
               <label className={labelClass}>Date</label>
               <input type="date" {...register('date')} className={inputClass} />
-              {errors.date && <p className="mt-1 text-xs text-rose-700 dark:text-rose-400">{errors.date.message}</p>}
+              {errors.date && <p className="mt-1 text-xs text-danger">{errors.date.message}</p>}
             </div>
             <div>
               <label className={labelClass}>Attendance</label>
@@ -170,7 +170,7 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
           <div>
             <label className={labelClass}>Venue name</label>
             <input type="text" {...register('venue_name')} className={inputClass} />
-            {errors.venue_name && <p className="mt-1 text-xs text-rose-700 dark:text-rose-400">{errors.venue_name.message}</p>}
+            {errors.venue_name && <p className="mt-1 text-xs text-danger">{errors.venue_name.message}</p>}
           </div>
           <div>
             <label className={labelClass}>Venue address</label>

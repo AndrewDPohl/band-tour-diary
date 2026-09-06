@@ -42,7 +42,7 @@ export function SignupPage() {
           <p className="mt-2 text-sm text-ink/60">
             We sent a confirmation link to <strong>{email}</strong>. Click it, then come back and sign in.
           </p>
-          <Link to="/login" className="mt-4 inline-block text-sm font-medium text-road-dark underline underline-offset-2 dark:text-amber-400">
+          <Link to="/login" className="mt-4 inline-block text-sm font-medium text-accent underline underline-offset-2">
             Back to sign in
           </Link>
         </div>
@@ -92,7 +92,7 @@ export function SignupPage() {
             />
           </div>
 
-          {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
             type="submit"
@@ -105,7 +105,7 @@ export function SignupPage() {
 
         <p className="mt-4 text-center text-sm text-ink/60">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-road-dark underline underline-offset-2 dark:text-amber-400">
+          <Link to="/login" className="font-medium text-accent underline underline-offset-2">
             Sign in
           </Link>
         </p>

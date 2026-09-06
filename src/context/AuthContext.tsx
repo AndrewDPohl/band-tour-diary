@@ -58,13 +58,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // password — anyone with an already-open session could otherwise
         // change it without knowing the original. Re-authenticate first to
         // confirm the current password is actually correct.
+        //
+        // Trade-offs of using signInWithPassword for that check: it shares
+        // Supabase's login rate limit (a few mistyped attempts here can also
+        // block ordinary sign-in for a bit), and it swaps in a brand-new
+        // session via onAuthStateChange, which — if another tab is mid
+        // token-refresh right at that moment — can lose that race and get
+        // signed out. Restoring the original session below limits how long
+        // the ad-hoc reauth session stays active, but doesn't eliminate
+        // either risk; this is a client-only check, not something Supabase
+        // enforces server-side for updateUser.
+        const originalSession = session
+
         const { error: reauthError } = await supabase.auth.signInWithPassword({
           email: session.user.email,
           password: currentPassword,
         })
-        if (reauthError) return { error: 'Current password is incorrect' }
+        if (reauthError) {
+          const wrongPassword = reauthError.message.toLowerCase().includes('invalid login credentials')
+          // Only map the specific "wrong credentials" case to a friendly
+          // message — pass through anything else (rate limit, network,
+          // unconfirmed email) so the user isn't told they mistyped a
+          // password they actually got right.
+          return { error: wrongPassword ? 'Current password is incorrect' : reauthError.message }
+        }
 
         const { error } = await supabase.auth.updateUser({ password: newPassword })
+
+        try {
+          await supabase.auth.setSession({
+            access_token: originalSession.access_token,
+            refresh_token: originalSession.refresh_token,
+          })
+        } catch {
+          // Best-effort restore — if it fails, the reauth session (still
+          // valid, just a different token pair) simply stays active instead.
+        }
+
         return { error: error?.message ?? null }
       },
     }),

@@ -11,7 +11,7 @@ const navItems = [
 
 function navLinkClasses(isActive: boolean) {
   return `flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs font-medium transition sm:flex-row sm:gap-2 sm:px-3 sm:py-2 sm:text-sm ${
-    isActive ? 'bg-road/15 text-road-dark dark:text-amber-400' : 'text-ink/60 hover:bg-ink/5 hover:text-ink'
+    isActive ? 'bg-road/15 text-accent' : 'text-ink/60 hover:bg-ink/5 hover:text-ink'
   }`
 }
 

@@ -50,7 +50,7 @@ export function PhotoGallery({ photos, showId }: { photos: ShowPhotoWithUrl[]; s
                   await deletePhoto.mutateAsync(lightbox)
                   setLightbox(null)
                 }}
-                className="rounded-lg bg-rose-600/90 px-4 py-2 text-sm font-medium text-white dark:bg-rose-500/90"
+                className="rounded-lg bg-danger-bg/90 px-4 py-2 text-sm font-medium text-white"
               >
                 Delete
               </button>

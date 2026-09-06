@@ -13,6 +13,15 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 
+/** Single source of truth for theme labels/icons, shared by ThemeToggle
+ * (which only cares about the light/dark entries) and Settings' three-way
+ * picker — keeps the two from drifting to mismatched icons. */
+export const themeOptions: { value: Theme; label: string; icon: string }[] = [
+  { value: 'light', label: 'Light', icon: '☀️' },
+  { value: 'dark', label: 'Dark', icon: '🌙' },
+  { value: 'system', label: 'System', icon: '💻' },
+]
+
 function getSystemTheme(): ResolvedTheme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }

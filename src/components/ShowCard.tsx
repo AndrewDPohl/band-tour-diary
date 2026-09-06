@@ -24,7 +24,7 @@ export function ShowCard({ show }: { show: Show }) {
         </div>
       </div>
       <div
-        className={`shrink-0 text-sm font-semibold ${net >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}
+        className={`shrink-0 text-sm font-semibold ${net >= 0 ? 'text-success' : 'text-danger'}`}
       >
         {money(net)}
       </div>

@@ -54,7 +54,7 @@ export function LoginPage() {
             />
           </div>
 
-          {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
             type="submit"
@@ -67,7 +67,7 @@ export function LoginPage() {
 
         <p className="mt-4 text-center text-sm text-ink/60">
           New band?{' '}
-          <Link to="/signup" className="font-medium text-road-dark underline underline-offset-2 dark:text-amber-400">
+          <Link to="/signup" className="font-medium text-accent underline underline-offset-2">
             Create an account
           </Link>
         </p>

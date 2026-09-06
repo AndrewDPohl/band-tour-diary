@@ -83,7 +83,7 @@ export function OnboardingPage() {
             </div>
           )}
 
-          {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
             type="submit"

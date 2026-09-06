@@ -12,15 +12,21 @@
     -->
     <script type="text/javascript">
       ;(function () {
+        // Must agree with ThemeContext.tsx's readStoredTheme()/getSystemTheme():
+        // both fall back to the OS preference when there's no valid stored
+        // choice — including when localStorage itself throws (e.g. some
+        // private-browsing modes). Disagreeing here would mean this script
+        // paints one theme and React's effect immediately flips to the
+        // other, which is exactly the flash this script exists to prevent.
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        var isDark = prefersDark
         try {
           var stored = localStorage.getItem('tour-diary-theme')
-          var isDark =
-            stored === 'dark' ||
-            (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-          document.documentElement.classList.toggle('dark', isDark)
+          isDark = stored === 'dark' || (stored !== 'light' && prefersDark)
         } catch (e) {
-          // localStorage unavailable — just leave the default light theme.
+          // localStorage unavailable — isDark already defaulted to prefersDark above.
         }
+        document.documentElement.classList.toggle('dark', isDark)
       })()
     </script>
     <!--

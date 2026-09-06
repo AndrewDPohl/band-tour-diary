@@ -12,6 +12,17 @@
   --color-road: #b45309;
   --color-road-dark: #92400e;
   --color-stage: #1e3a8a;
+  /* Semantic status/accent colors. Defining these once here — and
+     overriding them under .dark below — means every usage (text-accent,
+     text-success, text-danger, bg-danger) gets correct dark-mode contrast
+     automatically, the same way text-ink/bg-surface already do. Don't use
+     text-road-dark/text-emerald-700/text-rose-700/bg-rose-600 directly in
+     components; use these tokens instead, so a future contrast tweak is a
+     one-line change here rather than a hunt across every call site. */
+  --color-accent: #92400e;
+  --color-success: #047857;
+  --color-danger: #be123c;
+  --color-danger-bg: #e11d48;
   --font-display: "Georgia", "Cambria", serif;
 }
 
@@ -24,6 +35,10 @@
   --color-ink: #f5f5f4;
   --color-paper: #18181b;
   --color-surface: #27272a;
+  --color-accent: #fbbf24;
+  --color-success: #34d399;
+  --color-danger: #fb7185;
+  --color-danger-bg: #f43f5e;
 }
 
 html,

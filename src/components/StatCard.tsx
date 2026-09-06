@@ -6,8 +6,8 @@ interface StatCardProps {
 
 const toneClasses: Record<NonNullable<StatCardProps['tone']>, string> = {
   neutral: 'text-ink',
-  positive: 'text-emerald-700 dark:text-emerald-400',
-  negative: 'text-rose-700 dark:text-rose-400',
+  positive: 'text-success',
+  negative: 'text-danger',
 }
 
 export function StatCard({ label, value, tone = 'neutral' }: StatCardProps) {
