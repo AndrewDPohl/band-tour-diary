@@ -40,7 +40,7 @@ export function PhotoGallery({ photos, showId }: { photos: ShowPhotoWithUrl[]; s
               <button
                 type="button"
                 onClick={() => setLightbox(null)}
-                className="rounded-lg bg-white/90 px-4 py-2 text-sm font-medium text-ink"
+                className="rounded-lg bg-surface/90 px-4 py-2 text-sm font-medium text-ink"
               >
                 Close
               </button>
@@ -50,7 +50,7 @@ export function PhotoGallery({ photos, showId }: { photos: ShowPhotoWithUrl[]; s
                   await deletePhoto.mutateAsync(lightbox)
                   setLightbox(null)
                 }}
-                className="rounded-lg bg-rose-600/90 px-4 py-2 text-sm font-medium text-white"
+                className="rounded-lg bg-rose-600/90 px-4 py-2 text-sm font-medium text-white dark:bg-rose-500/90"
               >
                 Delete
               </button>

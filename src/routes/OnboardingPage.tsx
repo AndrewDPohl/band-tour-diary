@@ -39,7 +39,7 @@ export function OnboardingPage() {
           <p className="mt-1 text-sm text-ink/60">Create a band, or join one with an invite code.</p>
         </div>
 
-        <div className="mb-4 flex rounded-lg border border-ink/15 bg-white/70 p-1 text-sm font-medium">
+        <div className="mb-4 flex rounded-lg border border-ink/15 bg-surface/70 p-1 text-sm font-medium">
           <button
             type="button"
             onClick={() => setMode('create')}
@@ -56,7 +56,7 @@ export function OnboardingPage() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-ink/10 bg-white/70 p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-ink/10 bg-surface/70 p-6">
           {mode === 'create' ? (
             <div>
               <label className="block text-sm font-medium text-ink/70">Band name</label>
@@ -66,7 +66,7 @@ export function OnboardingPage() {
                 value={bandName}
                 onChange={(e) => setBandName(e.target.value)}
                 placeholder="e.g. The Roadworn"
-                className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road"
+                className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
               />
             </div>
           ) : (
@@ -78,12 +78,12 @@ export function OnboardingPage() {
                 value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
                 placeholder="e.g. AB3XZ9"
-                className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm uppercase tracking-widest outline-none focus:border-road"
+                className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm uppercase tracking-widest outline-none focus:border-road"
               />
             </div>
           )}
 
-          {error && <p className="text-sm text-rose-700">{error}</p>}
+          {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
 
           <button
             type="submit"

@@ -6,6 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tour Diary</title>
     <!--
+      Applies the saved theme before first paint, so there's no flash of the
+      wrong theme while React loads. Mirrors the logic in ThemeContext.tsx —
+      keep the two in sync if the storage key or fallback ever changes.
+    -->
+    <script type="text/javascript">
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('tour-diary-theme')
+          var isDark =
+            stored === 'dark' ||
+            (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', isDark)
+        } catch (e) {
+          // localStorage unavailable — just leave the default light theme.
+        }
+      })()
+    </script>
+    <!--
       Decodes the redirect that public/404.html performs on GitHub Pages,
       turning "/band-tour-diary/?/tours/abc123" back into a real path
       ("/band-tour-diary/tours/abc123") via history.replaceState before React

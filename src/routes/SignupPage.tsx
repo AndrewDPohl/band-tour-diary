@@ -42,7 +42,7 @@ export function SignupPage() {
           <p className="mt-2 text-sm text-ink/60">
             We sent a confirmation link to <strong>{email}</strong>. Click it, then come back and sign in.
           </p>
-          <Link to="/login" className="mt-4 inline-block text-sm font-medium text-road-dark underline underline-offset-2">
+          <Link to="/login" className="mt-4 inline-block text-sm font-medium text-road-dark underline underline-offset-2 dark:text-amber-400">
             Back to sign in
           </Link>
         </div>
@@ -59,7 +59,7 @@ export function SignupPage() {
           <p className="mt-1 text-sm text-ink/60">Start logging your shows.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-ink/10 bg-white/70 p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-ink/10 bg-surface/70 p-6">
           <div>
             <label className="block text-sm font-medium text-ink/70">Your name</label>
             <input
@@ -67,7 +67,7 @@ export function SignupPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road"
+              className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
             />
           </div>
           <div>
@@ -77,7 +77,7 @@ export function SignupPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road"
+              className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
             />
           </div>
           <div>
@@ -88,11 +88,11 @@ export function SignupPage() {
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road"
+              className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
             />
           </div>
 
-          {error && <p className="text-sm text-rose-700">{error}</p>}
+          {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
 
           <button
             type="submit"
@@ -105,7 +105,7 @@ export function SignupPage() {
 
         <p className="mt-4 text-center text-sm text-ink/60">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-road-dark underline underline-offset-2">
+          <Link to="/login" className="font-medium text-road-dark underline underline-offset-2 dark:text-amber-400">
             Sign in
           </Link>
         </p>

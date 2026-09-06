@@ -1,9 +1,103 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useTheme, type Theme } from '../context/ThemeContext'
 import { useBandMembers, useCurrentBand } from '../hooks/useBand'
+
+const themeOptions: { value: Theme; label: string; icon: string }[] = [
+  { value: 'light', label: 'Light', icon: '☀️' },
+  { value: 'dark', label: 'Dark', icon: '🌙' },
+  { value: 'system', label: 'System', icon: '💻' },
+]
+
+function ChangePasswordForm() {
+  const { updatePassword } = useAuth()
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSuccess(false)
+
+    if (newPassword !== confirmPassword) {
+      setError('New passwords do not match')
+      return
+    }
+
+    setSubmitting(true)
+    const { error } = await updatePassword(currentPassword, newPassword)
+    setSubmitting(false)
+
+    if (error) {
+      setError(error)
+      return
+    }
+
+    setSuccess(true)
+    setCurrentPassword('')
+    setNewPassword('')
+    setConfirmPassword('')
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-4 space-y-3 border-t border-ink/10 pt-4">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Change password</h3>
+      <div>
+        <label className="block text-sm font-medium text-ink/70">Current password</label>
+        <input
+          type="password"
+          required
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
+        />
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium text-ink/70">New password</label>
+          <input
+            type="password"
+            required
+            minLength={6}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-ink/70">Confirm new password</label>
+          <input
+            type="password"
+            required
+            minLength={6}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
+          />
+        </div>
+      </div>
+
+      {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
+      {success && <p className="text-sm text-emerald-700 dark:text-emerald-400">Password updated.</p>}
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="rounded-lg border border-ink/15 px-4 py-2 text-sm font-medium text-ink/70 transition hover:bg-ink/5 disabled:opacity-50"
+      >
+        {submitting ? 'Updating…' : 'Update password'}
+      </button>
+    </form>
+  )
+}
 
 export function SettingsPage() {
   const { user, signOut } = useAuth()
+  const { theme, setTheme } = useTheme()
   const { data: bandData } = useCurrentBand()
   const { data: members } = useBandMembers(bandData?.band.id)
   const [copied, setCopied] = useState(false)
@@ -19,13 +113,13 @@ export function SettingsPage() {
     <div className="space-y-6">
       <h1 className="font-display text-2xl font-semibold text-ink">Settings</h1>
 
-      <section className="rounded-xl border border-ink/10 bg-white/70 p-4">
+      <section className="rounded-xl border border-ink/10 bg-surface/70 p-4">
         <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Band</h2>
         <p className="text-lg font-medium text-ink">{bandData?.band.name}</p>
         <div className="mt-3">
           <p className="text-sm text-ink/60">Invite code — share this with bandmates so they can join:</p>
           <div className="mt-1 flex items-center gap-2">
-            <span className="rounded-lg bg-road/10 px-3 py-1.5 font-mono text-lg tracking-widest text-road-dark">
+            <span className="rounded-lg bg-road/10 px-3 py-1.5 font-mono text-lg tracking-widest text-road-dark dark:text-amber-400">
               {bandData?.band.invite_code}
             </span>
             <button
@@ -39,7 +133,7 @@ export function SettingsPage() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-ink/10 bg-white/70 p-4">
+      <section className="rounded-xl border border-ink/10 bg-surface/70 p-4">
         <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Members</h2>
         <ul className="divide-y divide-ink/10">
           {members?.map((m) => (
@@ -54,7 +148,28 @@ export function SettingsPage() {
         </ul>
       </section>
 
-      <section className="rounded-xl border border-ink/10 bg-white/70 p-4">
+      <section className="rounded-xl border border-ink/10 bg-surface/70 p-4">
+        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Appearance</h2>
+        <div className="flex gap-2">
+          {themeOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setTheme(option.value)}
+              className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition ${
+                theme === option.value
+                  ? 'border-road/40 bg-road/10 text-road-dark dark:text-amber-400'
+                  : 'border-ink/15 text-ink/70 hover:bg-ink/5'
+              }`}
+            >
+              <span aria-hidden="true">{option.icon}</span>
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-ink/10 bg-surface/70 p-4">
         <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Account</h2>
         <p className="text-sm text-ink/60">{user?.email}</p>
         <button
@@ -64,6 +179,8 @@ export function SettingsPage() {
         >
           Sign out
         </button>
+
+        <ChangePasswordForm />
       </section>
     </div>
   )

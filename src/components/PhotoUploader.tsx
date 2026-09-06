@@ -43,7 +43,7 @@ export function PhotoUploader({ bandId, showId }: { bandId: string; showId: stri
       >
         {pending > 0 ? `Uploading ${pending}…` : 'Add photos'}
       </button>
-      {error && <p className="mt-2 text-sm text-rose-700">{error}</p>}
+      {error && <p className="mt-2 text-sm text-rose-700 dark:text-rose-400">{error}</p>}
     </div>
   )
 }

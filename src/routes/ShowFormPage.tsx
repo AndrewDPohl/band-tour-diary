@@ -97,7 +97,7 @@ function fromShow(show: NonNullable<ReturnType<typeof useShow>['data']>): FormVa
 }
 
 const inputClass =
-  'mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road'
+  'mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road'
 const labelClass = 'block text-sm font-medium text-ink/70'
 
 export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
@@ -154,13 +154,13 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
       {tour && <p className="text-sm text-ink/50">{tour.name}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-6">
-        <section className="space-y-3 rounded-xl border border-ink/10 bg-white/70 p-4">
+        <section className="space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Venue &amp; date</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelClass}>Date</label>
               <input type="date" {...register('date')} className={inputClass} />
-              {errors.date && <p className="mt-1 text-xs text-rose-700">{errors.date.message}</p>}
+              {errors.date && <p className="mt-1 text-xs text-rose-700 dark:text-rose-400">{errors.date.message}</p>}
             </div>
             <div>
               <label className={labelClass}>Attendance</label>
@@ -170,7 +170,7 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
           <div>
             <label className={labelClass}>Venue name</label>
             <input type="text" {...register('venue_name')} className={inputClass} />
-            {errors.venue_name && <p className="mt-1 text-xs text-rose-700">{errors.venue_name.message}</p>}
+            {errors.venue_name && <p className="mt-1 text-xs text-rose-700 dark:text-rose-400">{errors.venue_name.message}</p>}
           </div>
           <div>
             <label className={labelClass}>Venue address</label>
@@ -188,7 +188,7 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
           </div>
         </section>
 
-        <section className="space-y-3 rounded-xl border border-ink/10 bg-white/70 p-4">
+        <section className="space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Promoter &amp; contact</h2>
           <div>
             <label className={labelClass}>Promoter name</label>
@@ -206,7 +206,7 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
           </div>
         </section>
 
-        <section className="space-y-3 rounded-xl border border-ink/10 bg-white/70 p-4">
+        <section className="space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Money</h2>
           <div>
             <label className={labelClass}>Payment type</label>
@@ -241,7 +241,7 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
           </div>
         </section>
 
-        <section className="space-y-3 rounded-xl border border-ink/10 bg-white/70 p-4">
+        <section className="space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Diary notes</h2>
           <textarea
             rows={6}

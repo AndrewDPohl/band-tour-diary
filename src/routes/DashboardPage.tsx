@@ -48,7 +48,7 @@ export function DashboardPage() {
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="mt-4 space-y-3 rounded-xl border border-ink/10 bg-white/70 p-4">
+        <form onSubmit={handleCreate} className="mt-4 space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <div>
             <label className="block text-sm font-medium text-ink/70">Tour name</label>
             <input
@@ -57,7 +57,7 @@ export function DashboardPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Summer 2026 Tour"
-              className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road"
+              className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -67,7 +67,7 @@ export function DashboardPage() {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road"
+                className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
               />
             </div>
             <div>
@@ -76,11 +76,11 @@ export function DashboardPage() {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm outline-none focus:border-road"
+                className="mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road"
               />
             </div>
           </div>
-          {error && <p className="text-sm text-rose-700">{error}</p>}
+          {error && <p className="text-sm text-rose-700 dark:text-rose-400">{error}</p>}
           <button
             type="submit"
             disabled={createTour.isPending}

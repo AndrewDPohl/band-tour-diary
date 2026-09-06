@@ -75,7 +75,7 @@ export function ShowDetailPage() {
         />
       </div>
 
-      <section className="mt-5 rounded-xl border border-ink/10 bg-white/70 p-4">
+      <section className="mt-5 rounded-xl border border-ink/10 bg-surface/70 p-4">
         <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Show details</h2>
         <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
           {show.venue_address && (
@@ -112,7 +112,7 @@ export function ShowDetailPage() {
 
       <section className="mt-5">
         <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Diary</h2>
-        <div className="rounded-xl border border-ink/10 bg-white/70 p-4">
+        <div className="rounded-xl border border-ink/10 bg-surface/70 p-4">
           {show.notes ? (
             <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">{show.notes}</p>
           ) : (
@@ -136,7 +136,7 @@ export function ShowDetailPage() {
             <button
               onClick={handleDelete}
               disabled={deleteShow.isPending}
-              className="rounded-lg bg-rose-600 px-3 py-1.5 font-medium text-white disabled:opacity-50"
+              className="rounded-lg bg-rose-600 px-3 py-1.5 font-medium text-white disabled:opacity-50 dark:bg-rose-500"
             >
               {deleteShow.isPending ? 'Deleting…' : 'Yes, delete'}
             </button>
@@ -145,7 +145,10 @@ export function ShowDetailPage() {
             </button>
           </div>
         ) : (
-          <button onClick={() => setConfirmingDelete(true)} className="text-sm text-rose-700 underline underline-offset-2">
+          <button
+            onClick={() => setConfirmingDelete(true)}
+            className="text-sm text-rose-700 underline underline-offset-2 dark:text-rose-400"
+          >
             Delete show
           </button>
         )}

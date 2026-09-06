@@ -14,7 +14,7 @@ export function ShowCard({ show }: { show: Show }) {
   return (
     <Link
       to={`/shows/${show.id}`}
-      className="flex items-center justify-between gap-3 rounded-lg border border-ink/10 bg-white/70 px-4 py-3 transition hover:border-road/40 hover:bg-white"
+      className="flex items-center justify-between gap-3 rounded-lg border border-ink/10 bg-surface/70 px-4 py-3 transition hover:border-road/40 hover:bg-surface"
     >
       <div className="min-w-0">
         <div className="truncate font-semibold text-ink">{show.venue_name}</div>
@@ -23,7 +23,9 @@ export function ShowCard({ show }: { show: Show }) {
           {show.city ? ` · ${show.city}${show.region ? `, ${show.region}` : ''}` : ''}
         </div>
       </div>
-      <div className={`shrink-0 text-sm font-semibold ${net >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+      <div
+        className={`shrink-0 text-sm font-semibold ${net >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}
+      >
         {money(net)}
       </div>
     </Link>
