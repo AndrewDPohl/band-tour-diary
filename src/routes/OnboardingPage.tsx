@@ -59,8 +59,11 @@ export function OnboardingPage() {
         <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-ink/10 bg-surface/70 p-6">
           {mode === 'create' ? (
             <div>
-              <label className="block text-sm font-medium text-ink/70">Band name</label>
+              <label htmlFor="band-name" className="block text-sm font-medium text-ink/70">
+                Band name
+              </label>
               <input
+                id="band-name"
                 type="text"
                 required
                 value={bandName}
@@ -71,8 +74,11 @@ export function OnboardingPage() {
             </div>
           ) : (
             <div>
-              <label className="block text-sm font-medium text-ink/70">Invite code</label>
+              <label htmlFor="invite-code" className="block text-sm font-medium text-ink/70">
+                Invite code
+              </label>
               <input
+                id="invite-code"
                 type="text"
                 required
                 value={inviteCode}

@@ -52,8 +52,11 @@ function ChangePasswordForm() {
     <form onSubmit={handleSubmit} className="mt-4 space-y-3 border-t border-ink/10 pt-4">
       <h3 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Change password</h3>
       <div>
-        <label className="block text-sm font-medium text-ink/70">Current password</label>
+        <label htmlFor="current-password" className="block text-sm font-medium text-ink/70">
+          Current password
+        </label>
         <input
+          id="current-password"
           type="password"
           required
           value={currentPassword}
@@ -66,8 +69,11 @@ function ChangePasswordForm() {
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-ink/70">New password</label>
+          <label htmlFor="new-password" className="block text-sm font-medium text-ink/70">
+            New password
+          </label>
           <input
+            id="new-password"
             type="password"
             required
             minLength={6}
@@ -80,8 +86,11 @@ function ChangePasswordForm() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-ink/70">Confirm new password</label>
+          <label htmlFor="confirm-password" className="block text-sm font-medium text-ink/70">
+            Confirm new password
+          </label>
           <input
+            id="confirm-password"
             type="password"
             required
             minLength={6}
@@ -133,7 +142,10 @@ export function SettingsPage() {
         <div className="mt-3">
           <p className="text-sm text-ink/60">Invite code — share this with bandmates so they can join:</p>
           <div className="mt-1 flex items-center gap-2">
-            <span className="rounded-lg bg-road/10 px-3 py-1.5 font-mono text-lg tracking-widest text-accent">
+            <span
+              data-testid="invite-code"
+              className="rounded-lg bg-road/10 px-3 py-1.5 font-mono text-lg tracking-widest text-accent"
+            >
               {bandData?.band.invite_code}
             </span>
             <button

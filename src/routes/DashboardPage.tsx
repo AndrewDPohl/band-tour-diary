@@ -50,8 +50,11 @@ export function DashboardPage() {
       {showForm && (
         <form onSubmit={handleCreate} className="mt-4 space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <div>
-            <label className="block text-sm font-medium text-ink/70">Tour name</label>
+            <label htmlFor="tour-name" className="block text-sm font-medium text-ink/70">
+              Tour name
+            </label>
             <input
+              id="tour-name"
               type="text"
               required
               value={name}
@@ -62,8 +65,11 @@ export function DashboardPage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-ink/70">Start date</label>
+              <label htmlFor="tour-start-date" className="block text-sm font-medium text-ink/70">
+                Start date
+              </label>
               <input
+                id="tour-start-date"
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -71,8 +77,11 @@ export function DashboardPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-ink/70">End date</label>
+              <label htmlFor="tour-end-date" className="block text-sm font-medium text-ink/70">
+                End date
+              </label>
               <input
+                id="tour-end-date"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}

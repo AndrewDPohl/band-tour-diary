@@ -66,6 +66,40 @@ will be live at `https://<your-username>.github.io/<repo-name>/`.
 DNS at GitHub Pages, and change `pathSegmentsToKeep` from `1` to `0` in
 [public/404.html](./public/404.html) (its comment explains why).
 
+## End-to-end tests
+
+[e2e/](./e2e) has Playwright tests covering the core flows: sign up/log in/log out,
+create a band, create a tour and a show (checking the net-cash math), a second user
+joining by invite code, uploading a photo, dark mode, and changing your password.
+They drive the real app against a real backend — no mocking — so they need their
+**own, separate Supabase project**, never your real one, since they create and modify
+actual bands/tours/shows on every run.
+
+**One-time setup:**
+
+1. Create a second Supabase project (same as [supabase/README.md](./supabase/README.md):
+   run the schema migration, and turn **Confirm email** OFF — tests sign up fresh users
+   through the real UI and need an active session immediately, not an email link).
+2. Copy `.env.e2e.example` to `.env.e2e.local` and fill in that **test** project's URL
+   and anon key.
+3. Install the Playwright browser once: `npx playwright install --with-deps chromium`.
+
+**Run locally:**
+
+```bash
+npm run test:e2e
+```
+
+(`npm run test:e2e:ui` opens Playwright's UI mode for debugging a failing spec.)
+
+**In CI**: [.github/workflows/deploy.yml](./.github/workflows/deploy.yml) runs the full
+suite as a required `e2e` job before `build`/`deploy` — a failing test blocks the
+deploy. It needs two repo secrets (**Settings → Secrets and variables → Actions**),
+distinct from the production `VITE_SUPABASE_*` ones used for the actual deploy:
+
+- `TEST_SUPABASE_URL`
+- `TEST_SUPABASE_ANON_KEY`
+
 ## Notes for future work
 
 - Currently assumes one band per user account; the data model (`band_members`) already

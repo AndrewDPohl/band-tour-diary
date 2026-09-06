@@ -158,32 +158,44 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Venue &amp; date</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass}>Date</label>
-              <input type="date" {...register('date')} className={inputClass} />
+              <label htmlFor="date" className={labelClass}>
+                Date
+              </label>
+              <input id="date" type="date" {...register('date')} className={inputClass} />
               {errors.date && <p className="mt-1 text-xs text-danger">{errors.date.message}</p>}
             </div>
             <div>
-              <label className={labelClass}>Attendance</label>
-              <input type="number" min={0} {...register('attendance_count')} className={inputClass} />
+              <label htmlFor="attendance_count" className={labelClass}>
+                Attendance
+              </label>
+              <input id="attendance_count" type="number" min={0} {...register('attendance_count')} className={inputClass} />
             </div>
           </div>
           <div>
-            <label className={labelClass}>Venue name</label>
-            <input type="text" {...register('venue_name')} className={inputClass} />
+            <label htmlFor="venue_name" className={labelClass}>
+              Venue name
+            </label>
+            <input id="venue_name" type="text" {...register('venue_name')} className={inputClass} />
             {errors.venue_name && <p className="mt-1 text-xs text-danger">{errors.venue_name.message}</p>}
           </div>
           <div>
-            <label className={labelClass}>Venue address</label>
-            <input type="text" {...register('venue_address')} className={inputClass} />
+            <label htmlFor="venue_address" className={labelClass}>
+              Venue address
+            </label>
+            <input id="venue_address" type="text" {...register('venue_address')} className={inputClass} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass}>City</label>
-              <input type="text" {...register('city')} className={inputClass} />
+              <label htmlFor="city" className={labelClass}>
+                City
+              </label>
+              <input id="city" type="text" {...register('city')} className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>State / region</label>
-              <input type="text" {...register('region')} className={inputClass} />
+              <label htmlFor="region" className={labelClass}>
+                State / region
+              </label>
+              <input id="region" type="text" {...register('region')} className={inputClass} />
             </div>
           </div>
         </section>
@@ -191,17 +203,23 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
         <section className="space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Promoter &amp; contact</h2>
           <div>
-            <label className={labelClass}>Promoter name</label>
-            <input type="text" {...register('promoter_name')} className={inputClass} />
+            <label htmlFor="promoter_name" className={labelClass}>
+              Promoter name
+            </label>
+            <input id="promoter_name" type="text" {...register('promoter_name')} className={inputClass} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass}>Day-of contact name</label>
-              <input type="text" {...register('contact_name')} className={inputClass} />
+              <label htmlFor="contact_name" className={labelClass}>
+                Day-of contact name
+              </label>
+              <input id="contact_name" type="text" {...register('contact_name')} className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Contact phone</label>
-              <input type="tel" {...register('contact_phone')} className={inputClass} />
+              <label htmlFor="contact_phone" className={labelClass}>
+                Contact phone
+              </label>
+              <input id="contact_phone" type="tel" {...register('contact_phone')} className={inputClass} />
             </div>
           </div>
         </section>
@@ -209,41 +227,71 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
         <section className="space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Money</h2>
           <div>
-            <label className={labelClass}>Payment type</label>
-            <select {...register('payment_type')} className={inputClass}>
+            <label htmlFor="payment_type" className={labelClass}>
+              Payment type
+            </label>
+            <select id="payment_type" {...register('payment_type')} className={inputClass}>
               <option value="door_deal">Door deal</option>
               <option value="guarantee">Flat guarantee</option>
             </select>
           </div>
           {paymentType === 'guarantee' && (
             <div>
-              <label className={labelClass}>Guarantee amount ($)</label>
-              <input type="number" step="0.01" min={0} {...register('guarantee_amount')} className={inputClass} />
+              <label htmlFor="guarantee_amount" className={labelClass}>
+                Guarantee amount ($)
+              </label>
+              <input
+                id="guarantee_amount"
+                type="number"
+                step="0.01"
+                min={0}
+                {...register('guarantee_amount')}
+                className={inputClass}
+              />
             </div>
           )}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelClass}>Door total ($)</label>
-              <input type="number" step="0.01" min={0} {...register('door_total')} className={inputClass} />
+              <label htmlFor="door_total" className={labelClass}>
+                Door total ($)
+              </label>
+              <input id="door_total" type="number" step="0.01" min={0} {...register('door_total')} className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Merch sales ($)</label>
-              <input type="number" step="0.01" min={0} {...register('merch_sales_total')} className={inputClass} />
+              <label htmlFor="merch_sales_total" className={labelClass}>
+                Merch sales ($)
+              </label>
+              <input
+                id="merch_sales_total"
+                type="number"
+                step="0.01"
+                min={0}
+                {...register('merch_sales_total')}
+                className={inputClass}
+              />
             </div>
             <div>
-              <label className={labelClass}>Gas spent ($)</label>
-              <input type="number" step="0.01" min={0} {...register('gas_spent')} className={inputClass} />
+              <label htmlFor="gas_spent" className={labelClass}>
+                Gas spent ($)
+              </label>
+              <input id="gas_spent" type="number" step="0.01" min={0} {...register('gas_spent')} className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Food spent ($)</label>
-              <input type="number" step="0.01" min={0} {...register('food_spent')} className={inputClass} />
+              <label htmlFor="food_spent" className={labelClass}>
+                Food spent ($)
+              </label>
+              <input id="food_spent" type="number" step="0.01" min={0} {...register('food_spent')} className={inputClass} />
             </div>
           </div>
         </section>
 
         <section className="space-y-3 rounded-xl border border-ink/10 bg-surface/70 p-4">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-ink/50">Diary notes</h2>
+          <label htmlFor="notes" className="sr-only">
+            Diary notes
+          </label>
           <textarea
+            id="notes"
             rows={6}
             {...register('notes')}
             placeholder="How'd the night go? Crowd energy, gear issues, funny stories…"
