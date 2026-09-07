@@ -6,6 +6,7 @@ import { usePhotos } from '../hooks/usePhotos'
 import { MoneySummary } from '../components/MoneySummary'
 import { PhotoGallery } from '../components/PhotoGallery'
 import { PhotoUploader } from '../components/PhotoUploader'
+import { showPayment } from '../types/database'
 
 const dateFmt = (d: string) =>
   new Date(`${d}T00:00:00`).toLocaleDateString('en-US', {
@@ -25,22 +26,25 @@ export function ShowDetailPage() {
 
   const { data: show, isLoading } = useShow(showId)
   const { data: photos } = usePhotos(showId)
-  const deleteShow = useDeleteShow(show?.tour_id)
+  const deleteShow = useDeleteShow()
   const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   if (isLoading) return <p className="text-sm text-ink/50">Loading show…</p>
   if (!show) return <p className="text-sm text-ink/50">Show not found.</p>
 
+  const backTo = show.tour_id ? `/tours/${show.tour_id}` : '/'
+  const backLabel = show.tour_id ? '← Back to tour' : '← Back to tours'
+
   async function handleDelete() {
     if (!show) return
     await deleteShow.mutateAsync(show.id)
-    navigate(`/tours/${show.tour_id}`, { replace: true })
+    navigate(backTo, { replace: true })
   }
 
   return (
     <div>
-      <Link to={`/tours/${show.tour_id}`} className="text-sm text-ink/50 hover:text-ink">
-        ← Back to tour
+      <Link to={backTo} className="text-sm text-ink/50 hover:text-ink">
+        {backLabel}
       </Link>
 
       <div className="mt-2 flex items-start justify-between gap-3">
@@ -67,10 +71,14 @@ export function ShowDetailPage() {
 
       <div className="mt-5">
         <MoneySummary
-          doorTotal={show.door_total}
+          showPayment={showPayment(show)}
           merchTotal={show.merch_sales_total}
+          softMerchUnits={show.soft_merch_units}
+          hardMerchUnits={show.hard_merch_units}
           gasSpent={show.gas_spent}
           foodSpent={show.food_spent}
+          lodgingSpent={show.lodging_spent}
+          equipmentSpent={show.equipment_spent}
           attendance={show.attendance_count}
         />
       </div>

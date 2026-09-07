@@ -23,8 +23,12 @@ const schema = z.object({
   guarantee_amount: z.string(),
   attendance_count: z.string(),
   merch_sales_total: z.string(),
+  soft_merch_units: z.string(),
+  hard_merch_units: z.string(),
   gas_spent: z.string(),
   food_spent: z.string(),
+  lodging_spent: z.string(),
+  equipment_spent: z.string(),
   door_total: z.string(),
   notes: z.string(),
 })
@@ -44,8 +48,12 @@ const defaults: FormValues = {
   guarantee_amount: '',
   attendance_count: '',
   merch_sales_total: '0',
+  soft_merch_units: '0',
+  hard_merch_units: '0',
   gas_spent: '0',
   food_spent: '0',
+  lodging_spent: '0',
+  equipment_spent: '0',
   door_total: '0',
   notes: '',
 }
@@ -53,6 +61,9 @@ const defaults: FormValues = {
 const blankToNull = (v: string) => (v.trim() === '' ? null : v)
 const blankToZero = (v: string) => (v.trim() === '' ? 0 : Number(v))
 const blankToNullNumber = (v: string) => (v.trim() === '' ? null : Number(v))
+// Unit counts are an `integer` column — round rather than let a stray "5.5"
+// from the number input hit Postgres as a type error.
+const blankToZeroInt = (v: string) => (v.trim() === '' ? 0 : Math.round(Number(v)))
 
 function toShowInput(values: FormValues): ShowInput {
   return {
@@ -68,8 +79,12 @@ function toShowInput(values: FormValues): ShowInput {
     guarantee_amount: values.payment_type === 'guarantee' ? blankToNullNumber(values.guarantee_amount) : null,
     attendance_count: blankToNullNumber(values.attendance_count),
     merch_sales_total: blankToZero(values.merch_sales_total),
+    soft_merch_units: blankToZeroInt(values.soft_merch_units),
+    hard_merch_units: blankToZeroInt(values.hard_merch_units),
     gas_spent: blankToZero(values.gas_spent),
     food_spent: blankToZero(values.food_spent),
+    lodging_spent: blankToZero(values.lodging_spent),
+    equipment_spent: blankToZero(values.equipment_spent),
     door_total: blankToZero(values.door_total),
     notes: blankToNull(values.notes),
   }
@@ -89,8 +104,12 @@ function fromShow(show: NonNullable<ReturnType<typeof useShow>['data']>): FormVa
     guarantee_amount: show.guarantee_amount != null ? String(show.guarantee_amount) : '',
     attendance_count: show.attendance_count != null ? String(show.attendance_count) : '',
     merch_sales_total: String(show.merch_sales_total),
+    soft_merch_units: String(show.soft_merch_units),
+    hard_merch_units: String(show.hard_merch_units),
     gas_spent: String(show.gas_spent),
     food_spent: String(show.food_spent),
+    lodging_spent: String(show.lodging_spent),
+    equipment_spent: String(show.equipment_spent),
     door_total: String(show.door_total),
     notes: show.notes ?? '',
   }
@@ -107,11 +126,11 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
   const bandId = bandData?.band.id
 
   const { data: existingShow } = useShow(mode === 'edit' ? showId : undefined)
-  const tourId = mode === 'edit' ? existingShow?.tour_id : tourIdParam
+  const tourId = mode === 'edit' ? (existingShow?.tour_id ?? undefined) : tourIdParam
   const { data: tour } = useTour(tourId)
 
   const createShow = useCreateShow(bandId, tourId)
-  const updateShow = useUpdateShow(showId, tourId)
+  const updateShow = useUpdateShow(showId)
 
   const {
     register,
@@ -248,15 +267,18 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
                 {...register('guarantee_amount')}
                 className={inputClass}
               />
+              <p className="mt-1 text-xs text-ink/50">Counted as this show's payment, in place of a door total.</p>
             </div>
           )}
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="door_total" className={labelClass}>
-                Door total ($)
-              </label>
-              <input id="door_total" type="number" step="0.01" min={0} {...register('door_total')} className={inputClass} />
-            </div>
+            {paymentType === 'door_deal' && (
+              <div>
+                <label htmlFor="door_total" className={labelClass}>
+                  Door total ($)
+                </label>
+                <input id="door_total" type="number" step="0.01" min={0} {...register('door_total')} className={inputClass} />
+              </div>
+            )}
             <div>
               <label htmlFor="merch_sales_total" className={labelClass}>
                 Merch sales ($)
@@ -271,6 +293,18 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
               />
             </div>
             <div>
+              <label htmlFor="soft_merch_units" className={labelClass}>
+                Soft merch units sold
+              </label>
+              <input id="soft_merch_units" type="number" min={0} {...register('soft_merch_units')} className={inputClass} />
+            </div>
+            <div>
+              <label htmlFor="hard_merch_units" className={labelClass}>
+                Hard merch units sold
+              </label>
+              <input id="hard_merch_units" type="number" min={0} {...register('hard_merch_units')} className={inputClass} />
+            </div>
+            <div>
               <label htmlFor="gas_spent" className={labelClass}>
                 Gas spent ($)
               </label>
@@ -281,6 +315,32 @@ export function ShowFormPage({ mode }: { mode: 'create' | 'edit' }) {
                 Food spent ($)
               </label>
               <input id="food_spent" type="number" step="0.01" min={0} {...register('food_spent')} className={inputClass} />
+            </div>
+            <div>
+              <label htmlFor="lodging_spent" className={labelClass}>
+                Lodging spent ($)
+              </label>
+              <input
+                id="lodging_spent"
+                type="number"
+                step="0.01"
+                min={0}
+                {...register('lodging_spent')}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="equipment_spent" className={labelClass}>
+                Equipment spent ($)
+              </label>
+              <input
+                id="equipment_spent"
+                type="number"
+                step="0.01"
+                min={0}
+                {...register('equipment_spent')}
+                className={inputClass}
+              />
             </div>
           </div>
         </section>

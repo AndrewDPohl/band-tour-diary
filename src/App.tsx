@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { useAuth } from './context/AuthContext'
 import { useCurrentBand } from './hooks/useBand'
+import { AddBandPage } from './routes/AddBandPage'
 import { DashboardPage } from './routes/DashboardPage'
 import { LoginPage } from './routes/LoginPage'
 import { OnboardingPage } from './routes/OnboardingPage'
@@ -68,6 +69,14 @@ export default function App() {
         }
       />
       <Route
+        path="/bands/new"
+        element={
+          <RequireAuth>
+            <AddBandPage />
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/"
         element={
           <RequireAuth>
@@ -89,6 +98,16 @@ export default function App() {
       />
       <Route
         path="/tours/:tourId/shows/new"
+        element={
+          <RequireAuth>
+            <RequireBand>
+              <ShowFormPage mode="create" />
+            </RequireBand>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/shows/new"
         element={
           <RequireAuth>
             <RequireBand>

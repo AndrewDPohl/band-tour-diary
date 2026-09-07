@@ -43,7 +43,7 @@ export interface Tour {
 
 export interface Show {
   id: string
-  tour_id: string
+  tour_id: string | null
   band_id: string
   date: string
   venue_name: string
@@ -57,8 +57,12 @@ export interface Show {
   guarantee_amount: number | null
   attendance_count: number | null
   merch_sales_total: number
+  soft_merch_units: number
+  hard_merch_units: number
   gas_spent: number
   food_spent: number
+  lodging_spent: number
+  equipment_spent: number
   door_total: number
   notes: string | null
   created_by: string
@@ -81,7 +85,22 @@ export interface ShowPhoto {
   created_at: string
 }
 
-/** Derived net cash for a show: door + merch - gas - food. */
-export function showNetCash(show: Pick<Show, 'door_total' | 'merch_sales_total' | 'gas_spent' | 'food_spent'>): number {
-  return show.door_total + show.merch_sales_total - show.gas_spent - show.food_spent
+/** What the band was actually paid for playing the show: the flat guarantee
+ * when that's the deal, otherwise the door total. These are mutually
+ * exclusive by construction — only one is ever collected for a given show
+ * (see ShowFormPage, which hides whichever doesn't apply). */
+export function showPayment(show: Pick<Show, 'payment_type' | 'door_total' | 'guarantee_amount'>): number {
+  return show.payment_type === 'guarantee' ? (show.guarantee_amount ?? 0) : show.door_total
+}
+
+/** Derived net cash for a show: show payment + merch - gas - food - lodging - equipment. */
+export function showNetCash(
+  show: Pick<
+    Show,
+    'payment_type' | 'door_total' | 'guarantee_amount' | 'merch_sales_total' | 'gas_spent' | 'food_spent' | 'lodging_spent' | 'equipment_spent'
+  >,
+): number {
+  return (
+    showPayment(show) + show.merch_sales_total - show.gas_spent - show.food_spent - show.lodging_spent - show.equipment_spent
+  )
 }

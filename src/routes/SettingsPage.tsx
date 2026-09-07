@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useActiveBand } from '../context/ActiveBandContext'
 import { useAuth } from '../context/AuthContext'
 import { themeOptions, useTheme } from '../context/ThemeContext'
-import { useBandMembers, useCurrentBand } from '../hooks/useBand'
+import { useBandMembers, useCurrentBand, useUserBands } from '../hooks/useBand'
 
 const inputClass =
   'mt-1 w-full rounded-lg border border-ink/15 bg-surface px-3 py-2 text-sm outline-none focus:border-road'
@@ -123,6 +125,8 @@ export function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { data: bandData } = useCurrentBand()
   const { data: members } = useBandMembers(bandData?.band.id)
+  const { data: userBands } = useUserBands()
+  const { setActiveBandId } = useActiveBand()
   const [copied, setCopied] = useState(false)
 
   async function copyInviteCode() {
@@ -157,7 +161,37 @@ export function SettingsPage() {
             </button>
           </div>
         </div>
+        <Link
+          to="/bands/new"
+          className="mt-3 inline-block text-sm font-medium text-accent underline underline-offset-2"
+        >
+          + Add another band
+        </Link>
       </section>
+
+      {userBands && userBands.length > 1 && (
+        <section className="rounded-xl border border-ink/10 bg-surface/70 p-4">
+          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Your bands</h2>
+          <ul className="divide-y divide-ink/10">
+            {userBands.map((b) => (
+              <li key={b.band.id} className="flex items-center justify-between py-2 text-sm">
+                <span className="text-ink">{b.band.name}</span>
+                {b.band.id === bandData?.band.id ? (
+                  <span className="text-xs font-medium text-accent">Active</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setActiveBandId(b.band.id)}
+                    className="rounded-lg border border-ink/15 px-3 py-1 text-xs font-medium text-ink/70 transition hover:bg-ink/5"
+                  >
+                    Switch
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="rounded-xl border border-ink/10 bg-surface/70 p-4">
         <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Members</h2>

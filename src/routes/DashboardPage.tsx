@@ -1,12 +1,16 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useCurrentBand } from '../hooks/useBand'
 import { useCreateTour, useTours } from '../hooks/useTours'
+import { useStandaloneShows } from '../hooks/useShows'
 import { TourCard } from '../components/TourCard'
+import { ShowCard } from '../components/ShowCard'
 
 export function DashboardPage() {
   const { data: bandData } = useCurrentBand()
   const bandId = bandData?.band.id
   const { data: tours, isLoading } = useTours(bandId)
+  const { data: standaloneShows, isLoading: showsLoading } = useStandaloneShows(bandId)
   const createTour = useCreateTour(bandId)
 
   const [showForm, setShowForm] = useState(false)
@@ -109,6 +113,29 @@ export function DashboardPage() {
         )}
         {tours?.map((tour) => (
           <TourCard key={tour.id} tour={tour} />
+        ))}
+      </div>
+
+      <div className="mt-10 flex items-center justify-between">
+        <h2 className="font-display text-xl font-semibold text-ink">Shows</h2>
+        <Link
+          to="/shows/new"
+          className="rounded-lg border border-ink/15 px-4 py-2 text-sm font-medium text-ink/70 transition hover:bg-ink/5"
+        >
+          + Add show
+        </Link>
+      </div>
+      <p className="text-sm text-ink/50">Shows not attached to any tour.</p>
+
+      <div className="mt-3 space-y-3">
+        {showsLoading && <p className="text-sm text-ink/50">Loading shows…</p>}
+        {!showsLoading && standaloneShows?.length === 0 && (
+          <p className="rounded-lg border border-dashed border-ink/20 px-4 py-8 text-center text-sm text-ink/50">
+            No standalone shows yet.
+          </p>
+        )}
+        {standaloneShows?.map((show) => (
+          <ShowCard key={show.id} show={show} />
         ))}
       </div>
     </div>

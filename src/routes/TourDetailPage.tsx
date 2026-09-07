@@ -3,6 +3,7 @@ import { useTour } from '../hooks/useTours'
 import { useShows } from '../hooks/useShows'
 import { ShowCard } from '../components/ShowCard'
 import { MoneySummary } from '../components/MoneySummary'
+import { showPayment } from '../types/database'
 
 export function TourDetailPage() {
   const { tourId } = useParams<{ tourId: string }>()
@@ -11,13 +12,17 @@ export function TourDetailPage() {
 
   const totals = (shows ?? []).reduce(
     (acc, s) => ({
-      door: acc.door + s.door_total,
+      payment: acc.payment + showPayment(s),
       merch: acc.merch + s.merch_sales_total,
+      softUnits: acc.softUnits + s.soft_merch_units,
+      hardUnits: acc.hardUnits + s.hard_merch_units,
       gas: acc.gas + s.gas_spent,
       food: acc.food + s.food_spent,
+      lodging: acc.lodging + s.lodging_spent,
+      equipment: acc.equipment + s.equipment_spent,
       attendance: acc.attendance + (s.attendance_count ?? 0),
     }),
-    { door: 0, merch: 0, gas: 0, food: 0, attendance: 0 },
+    { payment: 0, merch: 0, softUnits: 0, hardUnits: 0, gas: 0, food: 0, lodging: 0, equipment: 0, attendance: 0 },
   )
 
   if (tourLoading) return <p className="text-sm text-ink/50">Loading tour…</p>
@@ -43,10 +48,14 @@ export function TourDetailPage() {
         <div className="mt-4">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Tour totals</h2>
           <MoneySummary
-            doorTotal={totals.door}
+            showPayment={totals.payment}
             merchTotal={totals.merch}
+            softMerchUnits={totals.softUnits}
+            hardMerchUnits={totals.hardUnits}
             gasSpent={totals.gas}
             foodSpent={totals.food}
+            lodgingSpent={totals.lodging}
+            equipmentSpent={totals.equipment}
             attendance={totals.attendance}
           />
         </div>

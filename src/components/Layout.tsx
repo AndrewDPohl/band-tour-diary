@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useCurrentBand } from '../hooks/useBand'
+import { useActiveBand } from '../context/ActiveBandContext'
+import { useCurrentBand, useUserBands } from '../hooks/useBand'
 import { ThemeToggle } from './ThemeToggle'
 
 const navItems = [
@@ -15,9 +16,37 @@ function navLinkClasses(isActive: boolean) {
   }`
 }
 
+function BandName() {
+  const { data } = useCurrentBand()
+  const { data: bands } = useUserBands()
+  const { setActiveBandId } = useActiveBand()
+
+  if (!data?.band) return null
+
+  // Only show a switcher once there's actually something to switch between —
+  // a single-band user just sees their band name, same as before.
+  if (!bands || bands.length < 2) {
+    return <div className="text-xs leading-tight text-ink/50">{data.band.name}</div>
+  }
+
+  return (
+    <select
+      aria-label="Active band"
+      value={data.band.id}
+      onChange={(e) => setActiveBandId(e.target.value)}
+      className="-ml-1 rounded bg-transparent text-xs leading-tight text-ink/50 outline-none"
+    >
+      {bands.map((b) => (
+        <option key={b.band.id} value={b.band.id}>
+          {b.band.name}
+        </option>
+      ))}
+    </select>
+  )
+}
+
 export function Layout({ children }: { children: ReactNode }) {
   const { signOut } = useAuth()
-  const { data } = useCurrentBand()
 
   return (
     <div className="flex min-h-full flex-col">
@@ -27,7 +56,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <span className="text-xl">📓</span>
             <div>
               <div className="font-display text-base font-semibold leading-tight text-ink">Tour Diary</div>
-              {data?.band && <div className="text-xs leading-tight text-ink/50">{data.band.name}</div>}
+              <BandName />
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -39,6 +68,12 @@ export function Layout({ children }: { children: ReactNode }) {
                   {item.label}
                 </NavLink>
               ))}
+              <Link
+                to="/bands/new"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-ink/60 transition hover:bg-ink/5 hover:text-ink"
+              >
+                + Add band
+              </Link>
               <button
                 onClick={() => signOut()}
                 className="rounded-lg px-3 py-2 text-sm font-medium text-ink/60 transition hover:bg-ink/5 hover:text-ink"

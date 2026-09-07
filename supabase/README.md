@@ -9,13 +9,17 @@ one-time setup.
 2. Pick any name/region and a database password (you won't need the password day-to-day).
 3. Wait for the project to finish provisioning (~2 minutes).
 
-## 2. Run the schema migration
+## 2. Run the schema migrations
 
 1. In your Supabase project, open **SQL Editor** in the left sidebar.
-2. Click **New query**, paste in the entire contents of
-   [`migrations/0001_init.sql`](./migrations/0001_init.sql), and click **Run**.
-3. This creates all the tables, row-level security policies, and the `show-photos`
-   storage bucket used by the app.
+2. Run each file in [`migrations/`](./migrations) **in order** (`0001_init.sql`
+   first, then any later ones) — click **New query**, paste in a file's entire
+   contents, click **Run**, then repeat for the next file. Each one is the
+   historical record of a real schema change, so a fresh project needs all of them
+   to end up with the current schema; skipping ahead to just the newest file will
+   leave earlier tables/columns missing.
+3. Together they create all the tables, row-level security policies, and the
+   `show-photos` storage bucket used by the app.
 
 ## 3. Configure auth
 

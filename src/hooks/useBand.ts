@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabaseClient'
-import type { Band, BandMemberWithProfile } from '../types/database'
+import type { Band, BandMemberWithProfile, BandRole } from '../types/database'
+import { useActiveBand } from '../context/ActiveBandContext'
 import { useAuth } from '../context/AuthContext'
 
 function randomInviteCode(): string {
@@ -12,30 +13,51 @@ function randomInviteCode(): string {
   return code
 }
 
-/** The current user's band (MVP assumes one band per user). */
-export function useCurrentBand() {
+export interface UserBand {
+  band: Band
+  role: BandRole
+  joined_at: string
+}
+
+/** Every band the current user belongs to, oldest membership first. */
+export function useUserBands() {
   const { user } = useAuth()
 
   return useQuery({
-    queryKey: ['current-band', user?.id],
+    queryKey: ['user-bands', user?.id],
     enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('band_members')
         .select('band_id, role, joined_at, bands(*)')
         .eq('user_id', user!.id)
-        .limit(1)
-        .maybeSingle()
+        .order('joined_at', { ascending: true })
 
       if (error) throw error
-      if (!data) return null
 
-      return {
-        band: data.bands as unknown as Band,
-        role: data.role as 'owner' | 'member',
-      }
+      return (data ?? []).map((row) => ({
+        band: row.bands as unknown as Band,
+        role: row.role as BandRole,
+        joined_at: row.joined_at,
+      })) as UserBand[]
     },
   })
+}
+
+/** The user's currently *active* band — the one Dashboard/Settings/etc. are
+ * scoped to. Falls back to the oldest membership if nothing (or an
+ * out-of-date choice, e.g. a band they've since left) is stored. */
+export function useCurrentBand() {
+  const { data: bands, isLoading, error } = useUserBands()
+  const { activeBandId } = useActiveBand()
+
+  const active = bands && (bands.find((b) => b.band.id === activeBandId) ?? bands[0])
+
+  return {
+    data: active ? { band: active.band, role: active.role } : null,
+    isLoading,
+    error,
+  }
 }
 
 export function useCreateBand() {
@@ -72,12 +94,12 @@ export function useCreateBand() {
     },
     onSuccess: () => {
       // `refetchType: 'all'` (not the default 'active') matters here: nothing
-      // is actively observing ['current-band'] while still on the Onboarding
-      // page, so a default invalidation would just mark it stale without
-      // refetching — and mutateAsync would resolve before the cache actually
-      // has the new band, letting the RequireBand route guard bounce back to
-      // /onboarding before the fresh data arrives.
-      return queryClient.invalidateQueries({ queryKey: ['current-band'], refetchType: 'all' })
+      // is actively observing ['user-bands'] while still on the Onboarding (or
+      // Add Band) page, so a default invalidation would just mark it stale
+      // without refetching — and mutateAsync would resolve before the cache
+      // actually has the new band, letting the RequireBand route guard bounce
+      // back to /onboarding before the fresh data arrives.
+      return queryClient.invalidateQueries({ queryKey: ['user-bands'], refetchType: 'all' })
     },
   })
 }
@@ -115,12 +137,12 @@ export function useJoinBand() {
     },
     onSuccess: () => {
       // `refetchType: 'all'` (not the default 'active') matters here: nothing
-      // is actively observing ['current-band'] while still on the Onboarding
-      // page, so a default invalidation would just mark it stale without
-      // refetching — and mutateAsync would resolve before the cache actually
-      // has the new band, letting the RequireBand route guard bounce back to
-      // /onboarding before the fresh data arrives.
-      return queryClient.invalidateQueries({ queryKey: ['current-band'], refetchType: 'all' })
+      // is actively observing ['user-bands'] while still on the Onboarding (or
+      // Add Band) page, so a default invalidation would just mark it stale
+      // without refetching — and mutateAsync would resolve before the cache
+      // actually has the new band, letting the RequireBand route guard bounce
+      // back to /onboarding before the fresh data arrives.
+      return queryClient.invalidateQueries({ queryKey: ['user-bands'], refetchType: 'all' })
     },
   })
 }

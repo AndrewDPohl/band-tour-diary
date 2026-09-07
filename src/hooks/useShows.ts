@@ -20,6 +20,25 @@ export function useShows(tourId: string | undefined) {
   })
 }
 
+/** Shows for a band that aren't attached to any tour. */
+export function useStandaloneShows(bandId: string | undefined) {
+  return useQuery({
+    queryKey: ['shows', 'standalone', bandId],
+    enabled: !!bandId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('shows')
+        .select('*')
+        .eq('band_id', bandId!)
+        .is('tour_id', null)
+        .order('date', { ascending: false })
+
+      if (error) throw error
+      return data as Show[]
+    },
+  })
+}
+
 export function useShow(showId: string | undefined) {
   return useQuery({
     queryKey: ['show', showId],
@@ -32,16 +51,17 @@ export function useShow(showId: string | undefined) {
   })
 }
 
+/** `tourId` is optional — omit it to create a show with no tour. */
 export function useCreateShow(bandId: string | undefined, tourId: string | undefined) {
   const { user } = useAuth()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (input: ShowInput) => {
-      if (!bandId || !tourId || !user) throw new Error('Missing band, tour, or user')
+      if (!bandId || !user) throw new Error('Missing band or user')
       const { data, error } = await supabase
         .from('shows')
-        .insert({ ...input, band_id: bandId, tour_id: tourId, created_by: user.id })
+        .insert({ ...input, band_id: bandId, tour_id: tourId ?? null, created_by: user.id })
         .select()
         .single()
 
@@ -49,12 +69,13 @@ export function useCreateShow(bandId: string | undefined, tourId: string | undef
       return data as Show
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shows', tourId] })
+      // Covers both ['shows', tourId] and ['shows', 'standalone', bandId].
+      queryClient.invalidateQueries({ queryKey: ['shows'] })
     },
   })
 }
 
-export function useUpdateShow(showId: string | undefined, tourId: string | undefined) {
+export function useUpdateShow(showId: string | undefined) {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -66,12 +87,12 @@ export function useUpdateShow(showId: string | undefined, tourId: string | undef
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['show', showId] })
-      queryClient.invalidateQueries({ queryKey: ['shows', tourId] })
+      queryClient.invalidateQueries({ queryKey: ['shows'] })
     },
   })
 }
 
-export function useDeleteShow(tourId: string | undefined) {
+export function useDeleteShow() {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -80,7 +101,7 @@ export function useDeleteShow(tourId: string | undefined) {
       if (error) throw error
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['shows', tourId] })
+      queryClient.invalidateQueries({ queryKey: ['shows'] })
     },
   })
 }
