@@ -29,13 +29,11 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      # Runs against a separate, dedicated test Supabase project — never the
-      # real one — since these tests create and modify real bands/tours/shows.
-      # See "End-to-end tests" in README.md for one-time setup.
+      # Covers only flows that don't need a real backend (public pages,
+      # route guards, dark-mode init) — see e2e/*.spec.ts and README.md's
+      # "End-to-end tests" section for why, and the plan for expanding this
+      # once a test backend is set up.
       - run: npm run test:e2e
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
 
       - uses: actions/upload-artifact@v4
         if: failure()

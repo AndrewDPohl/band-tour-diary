@@ -68,37 +68,32 @@ DNS at GitHub Pages, and change `pathSegmentsToKeep` from `1` to `0` in
 
 ## End-to-end tests
 
-[e2e/](./e2e) has Playwright tests covering the core flows: sign up/log in/log out,
-create a band, create a tour and a show (checking the net-cash math), a second user
-joining by invite code, uploading a photo, dark mode, and changing your password.
-They drive the real app against a real backend — no mocking — so they need their
-**own, separate Supabase project**, never your real one, since they create and modify
-actual bands/tours/shows on every run.
+[e2e/](./e2e) has Playwright tests, deliberately scoped to what's testable **without a
+real backend**: the public login/signup pages, navigation and client-side validation
+on them, the route guards that redirect a signed-out visitor to `/login`, and dark
+mode's init logic (localStorage + system-preference fallback, which is pure
+client-side state — no network involved).
 
-**One-time setup:**
+Everything past sign-in — bands, tours, shows, photos, changing your password — needs
+a real Supabase project to authenticate and persist data against, which would mean
+either a second (paid, past the free-tier project limit) Supabase project, reusing
+the real production project for disposable test data, or running Supabase locally via
+Docker. None of those were worth it yet, so that coverage is deferred until one of
+those becomes the right tradeoff — see the git history around this section for the
+fuller version of that suite if picking it back up.
 
-1. Create a second Supabase project (same as [supabase/README.md](./supabase/README.md):
-   run the schema migration, and turn **Confirm email** OFF — tests sign up fresh users
-   through the real UI and need an active session immediately, not an email link).
-2. Copy `.env.e2e.example` to `.env.e2e.local` and fill in that **test** project's URL
-   and anon key.
-3. Install the Playwright browser once: `npx playwright install --with-deps chromium`.
-
-**Run locally:**
+**Run locally** (no setup needed — no Supabase project, no env file):
 
 ```bash
+npx playwright install --with-deps chromium  # one-time
 npm run test:e2e
 ```
 
 (`npm run test:e2e:ui` opens Playwright's UI mode for debugging a failing spec.)
 
-**In CI**: [.github/workflows/deploy.yml](./.github/workflows/deploy.yml) runs the full
+**In CI**: [.github/workflows/deploy.yml](./.github/workflows/deploy.yml) runs the
 suite as a required `e2e` job before `build`/`deploy` — a failing test blocks the
-deploy. It needs two repo secrets (**Settings → Secrets and variables → Actions**),
-distinct from the production `VITE_SUPABASE_*` ones used for the actual deploy:
-
-- `TEST_SUPABASE_URL`
-- `TEST_SUPABASE_ANON_KEY`
+deploy. No repo secrets are needed for it.
 
 ## Notes for future work
 

@@ -1,9 +1,4 @@
 import { defineConfig, devices } from '@playwright/test'
-import { config as loadEnv } from 'dotenv'
-
-// Only affects local runs — in CI the workflow sets VITE_SUPABASE_URL/ANON_KEY
-// directly, and this file simply won't exist there.
-loadEnv({ path: '.env.e2e.local' })
 
 const PORT = 5173
 const baseURL = `http://localhost:${PORT}`
@@ -33,8 +28,13 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     env: {
-      VITE_SUPABASE_URL: process.env.VITE_SUPABASE_URL ?? '',
-      VITE_SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY ?? '',
+      // This suite only covers flows that don't need a real backend (public
+      // pages, route guards, dark-mode init) — see e2e/*.spec.ts — so these
+      // just need to be well-formed enough for the Supabase client to
+      // construct without throwing. No live project, no secrets, no
+      // network calls are ever made against these.
+      VITE_SUPABASE_URL: 'https://placeholder.supabase.co',
+      VITE_SUPABASE_ANON_KEY: 'placeholder-anon-key',
     },
   },
 })
